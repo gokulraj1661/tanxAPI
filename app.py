@@ -9,20 +9,32 @@ import threading
 import time
 import smtplib
 import logging
+from flask_httpauth import HTTPBasicAuth
+#Authentication
+auth = HTTPBasicAuth()
+USER_DATA = {
+   "Username": "password"
+}
 app = Flask(__name__)
-
 ma = Marshmallow(app)
+@auth.verify_password
+def verify(username, password):
+   if not (username and password):
+       return False
+   return USER_DATA.get(username) == password
+# Database configuration
 
 class Config:
     basedir = os.path.abspath(os.path.dirname(__file__))
 
-    # Database configuration
+    
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+#Alert Creation
 class Alert(db.Model):
     user_email = db.Column(db.String,primary_key=True)
     target_price = db.Column(db.Float)
@@ -61,13 +73,13 @@ class WebSocketManager:
             print(f"Current Price: {current_price}")
         ws = websocket.WebSocketApp(websocket_url, on_message=on_message)
         ws.run_forever()
-        
+#Mial generation using smtp        
 def send_email(recipient_email, subject, body):
     try:
-        smtp_server = 'smtp.gmail.com'  # Update with your SMTP server
-        smtp_port = 587  # Update with the appropriate port
-        smtp_username = 'gokulraj.s2020@vitstudent.ac.in'  # Update with your email
-        smtp_password = 'aazj lecr rvdq krwn'  # Update with your email password
+        smtp_server = 'smtp.gmail.com'  
+        smtp_port = 587  
+        smtp_username = 'gokulraj.s2020@vitstudent.ac.in'  
+        smtp_password = 'aazj lecr rvdq krwn'  
 
         server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()
@@ -101,8 +113,9 @@ def check_alerts():
                   time.sleep(5)
 def start_websocket_in_thread(symbol):
     WebSocketManager(symbol)
-
+#Endpoint 1
 @app.route('/alerts/create', methods=['POST'])
+@auth.login_required
 def create_alert():
     target_price = request.json['target_price']
     user_email = request.json['user_email']
@@ -113,15 +126,43 @@ def create_alert():
     db.session.commit()
 
     return jsonify({"message": f"new alert added"})
-
+#Endpoint 3
 @app.route('/alerts/getalerts', methods=['GET'])
+@auth.login_required
 def get_alerts():
-    all_alerts = Alert.query.all()
-    result = alert_schemas.dump(all_alerts)
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=4, type=int)
+    status_filter = request.args.get('status', None)
+
+    if status_filter:
+        # If status filter is provided, filter the alerts based on the status
+        filtered_alerts = Alert.query.filter_by(status=status_filter).paginate(page=page, per_page=per_page)
+        result = {
+            'alerts': alert_schemas.dump(filtered_alerts.items),
+            'pagination': {
+                'total_pages': filtered_alerts.pages,
+                'current_page': filtered_alerts.page,
+                'total_items': filtered_alerts.total,
+                'per_page': per_page
+            }
+        }
+    else:
+        # If no status filter is provided, retrieve all alerts with pagination
+        all_alerts = Alert.query.paginate(page=page, per_page=per_page)
+        result = {
+            'alerts': alert_schemas.dump(all_alerts.items),
+            'pagination': {
+                'total_pages': all_alerts.pages,
+                'current_page': all_alerts.page,
+                'total_items': all_alerts.total,
+                'per_page': per_page
+            }
+        }
+
     return jsonify(result)
-
+#Endpoint 2
 @app.route('/alerts/delete/<id>',methods=['DELETE'])
-
+@auth.login_required 
 def delete_alert(id):
     res = Alert.query.get(id)
     if res:
