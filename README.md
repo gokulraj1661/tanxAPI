@@ -11,7 +11,7 @@ Used SqlAlchemy for Database.Applied Redis as a cache layer to get alerts from d
   - **Fetching Alerts**
   - **Delete Alert By gmail**
   - **Protected Endpoint with Basic Authentication**
-- **Authentication **
+- **Authentication**
 - **Images of Solution for sending alerts**
 
 
@@ -33,7 +33,7 @@ Used SqlAlchemy for Database.Applied Redis as a cache layer to get alerts from d
 
 3. Install dependencies:
     ```bash
-    pip install -r requirements.txt
+    pip install -r requirments.txt
     ```
 
 4. Running the application
