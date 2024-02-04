@@ -5,7 +5,7 @@ Other than this we can delete the alert we created.There is another endpoint whi
 Used SqlAlchemy for Database.Applied Redis as a cache layer to get alerts from database.
 ## Table of Contents
 
-- **Installation**
+- **Run without docker**
 - **Endpoints**
   - **Creating a new Alert**
   - **Fetching Alerts**
@@ -16,12 +16,12 @@ Used SqlAlchemy for Database.Applied Redis as a cache layer to get alerts from d
 
 
 
-## Installation
+## Run Without Docker
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/gokulraj1661/FarmwiseAITask.git
-    cd FarmwiseAITask
+    git clone https://github.com/gokulraj1661/tanxAPI.git
+    cd tanxAPI
     ```
 
 2. Set up a virtual environment:
@@ -35,6 +35,14 @@ Used SqlAlchemy for Database.Applied Redis as a cache layer to get alerts from d
     ```bash
     pip install -r requirements.txt
     ```
+
+4. Running the application
+
+   ```bash
+     python app.py
+
+   ```
+   As Dealing with Redis we have to start a redis server parelley when running the application.
 
 
 ## Endpoints
@@ -68,13 +76,19 @@ With the help of HTTPBasicAuth, developed a login page where it allows the endpo
 - **Username:** `Username`
 - **Password:** `password`
 
-## Running the application
 
-```bash
-cd app
-python main.py
-
-```
 ## Images of Solution for sending alerts
 ![Screenshot 2024-02-04 070149](https://github.com/gokulraj1661/tanxAPI/assets/90254712/06d651ce-d452-4ec8-884f-2c803bc91215)
+## Create Alert
+![Screenshot 2024-02-04 070210](https://github.com/gokulraj1661/tanxAPI/assets/90254712/c3998f44-a775-4285-92f8-b60fdd7eb8a7)
+## Get Alert with page segmentaion and filter
+![Screenshot 2024-02-04 070308](https://github.com/gokulraj1661/tanxAPI/assets/90254712/23daffc7-3ad4-44c1-b9b6-bef42b355404)
+## Teminal Output Of Sending mail
+![Screenshot 2024-02-04 071822](https://github.com/gokulraj1661/tanxAPI/assets/90254712/f8db37db-c1d8-4ecb-8ffb-badd748b56d8)
+## Mail Recived After Target Reached
+![Screenshot 2024-02-04 070332](https://github.com/gokulraj1661/tanxAPI/assets/90254712/6632c04c-aa80-4efc-b073-b194dce5b066)
+![Screenshot 2024-02-04 070359](https://github.com/gokulraj1661/tanxAPI/assets/90254712/e9c44fca-669c-4196-ad46-60977f8aaa06)
+## Delete Alert
+![Screenshot 2024-02-04 070435](https://github.com/gokulraj1661/tanxAPI/assets/90254712/9c4e26c9-346f-4100-bd7a-d013dc6801d9)
+
 
