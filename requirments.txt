@@ -1,0 +1,10 @@
+flask
+flask_sqlalchemy
+flask_marshmallow
+flask_migrate
+websocket-client
+smtplib
+gunicorn
+eventlet
+Flask-HTTPAuth
+Flask-Caching

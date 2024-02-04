@@ -10,6 +10,8 @@ import time
 import smtplib
 import logging
 from flask_httpauth import HTTPBasicAuth
+from flask_caching import Cache
+
 #Authentication
 auth = HTTPBasicAuth()
 USER_DATA = {
@@ -34,6 +36,11 @@ class Config:
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+app.config['CACHE_TYPE'] = 'redis'  
+app.config['CACHE_KEY_PREFIX'] = 'alerts'
+app.config['CACHE_REDIS_URL'] = 'redis://localhost:6379/0' 
+ 
+cache = Cache(app)
 #Alert Creation
 class Alert(db.Model):
     user_email = db.Column(db.String,primary_key=True)
@@ -104,7 +111,7 @@ def check_alerts():
                       subject = 'Alert Triggered'
                       body = f"Your alert for {alert.symbol} has been triggered. The current price is {current_price}."
                       send_email(alert.user_email, subject, body)
-
+                      print(f'An alert email sent to {alert.user_email}')
 
                       alert.status= 'trigerred'
                       db.session.commit()
@@ -126,14 +133,16 @@ def create_alert():
     db.session.commit()
 
     return jsonify({"message": f"new alert added"})
-#Endpoint 3
+#Endpoint 3 Included Redis as cache layer
 @app.route('/alerts/getalerts', methods=['GET'])
 @auth.login_required
+@cache.cached(timeout=60)
 def get_alerts():
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=4, type=int)
     status_filter = request.args.get('status', None)
-
+    cache_key = f'get_alerts:{status_filter or "all"}:{page}:{per_page}'
+    result = cache.get(cache_key)
     if status_filter:
         # If status filter is provided, filter the alerts based on the status
         filtered_alerts = Alert.query.filter_by(status=status_filter).paginate(page=page, per_page=per_page)
@@ -158,7 +167,7 @@ def get_alerts():
                 'per_page': per_page
             }
         }
-
+    cache.set(cache_key, result, timeout=60)
     return jsonify(result)
 #Endpoint 2
 @app.route('/alerts/delete/<id>',methods=['DELETE'])
