@@ -76,4 +76,5 @@ python main.py
 
 ```
 ## Images of Solution for sending alerts
+![Screenshot 2024-02-04 070149](https://github.com/gokulraj1661/tanxAPI/assets/90254712/06d651ce-d452-4ec8-884f-2c803bc91215)
 
