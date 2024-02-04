@@ -90,5 +90,7 @@ With the help of HTTPBasicAuth, developed a login page where it allows the endpo
 ![Screenshot 2024-02-04 070359](https://github.com/gokulraj1661/tanxAPI/assets/90254712/e9c44fca-669c-4196-ad46-60977f8aaa06)
 ## Delete Alert
 ![Screenshot 2024-02-04 070435](https://github.com/gokulraj1661/tanxAPI/assets/90254712/9c4e26c9-346f-4100-bd7a-d013dc6801d9)
+## Issues with Docker
+![image](https://github.com/gokulraj1661/tanxAPI/assets/90254712/c6abacb6-4ad3-4393-90de-3591ba42caa7)
 
 
